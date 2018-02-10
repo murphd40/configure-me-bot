@@ -1,0 +1,38 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.10.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+group = 'com.murphd40'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compileOnly('org.projectlombok:lombok')
+
+	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+
+	compile("com.squareup.retrofit2:retrofit:${LIB_RETROFIT2_VERSION}")
+	compile("com.squareup.retrofit2:converter-jackson:${LIB_RETROFIT2_VERSION}")
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile("com.squareup.retrofit2:retrofit-mock:${LIB_RETROFIT2_VERSION}")
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
