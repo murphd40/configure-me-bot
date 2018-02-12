@@ -19,20 +19,34 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
+	maven { url "https://repo.spring.io/milestone" }
 	mavenCentral()
 }
+
+//dependencyManagement {
+//	imports {
+//		mavenBom 'org.springframework.boot.experimental:spring-boot-dependencies-web-reactive:0.1.0.M1'
+//	}
+//}
 
 dependencies {
 	compileOnly('org.projectlombok:lombok')
 
-	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+	compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
+	compile group: 'commons-codec', name: 'commons-codec', version: '1.11'
+
+	compile('org.springframework.boot:spring-boot-starter-data-cassandra')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+//	compile('org.springframework.boot.experimental:spring-boot-starter-web-reactive')
 
 	compile("com.squareup.retrofit2:retrofit:${LIB_RETROFIT2_VERSION}")
 	compile("com.squareup.retrofit2:converter-jackson:${LIB_RETROFIT2_VERSION}")
 
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile("io.projectreactor:reactor-core:3.1.3.RELEASE")
+//	compile("io.projectreactor.ipc:reactor-netty")
+
 	testCompile("com.squareup.retrofit2:retrofit-mock:${LIB_RETROFIT2_VERSION}")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

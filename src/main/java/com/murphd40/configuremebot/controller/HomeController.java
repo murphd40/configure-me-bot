@@ -1,7 +1,5 @@
 package com.murphd40.configuremebot.controller;
 
-import java.util.Date;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @GetMapping
+    @GetMapping("/hello")
     public String helloWorld(Model model) {
-
-        String message = String.format("Hello! The current time is %s", new Date());
-
-        model.addAttribute("message", message);
+        model.addAttribute("message", "hello world!");
 
         return "hello";
     }

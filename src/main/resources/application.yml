@@ -1,0 +1,16 @@
+
+server:
+  port: ${HTTP_PORT:9080}
+  tomcat:
+    uri-encoding: ${URI_ENCODING:UTF-8}
+
+watsonwork:
+  app:
+    id: 27f5cf90-5691-4764-bec9-95653443449e
+    secret: ${APP_SECRET}
+  webhook:
+    id: 5a80d6c4e4b00bc90f8d9b79
+    secret: ${WEBHOOK_SECRET}
+  api:
+    uri: ${WATSON_WORK_API_URI:https://api.watsonwork.ibm.com}
+    oauth: ${WATSON_WORK_OAUTH:/oauth/authorize}
