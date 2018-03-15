@@ -49,4 +49,7 @@ dependencies {
 
 	testCompile("com.squareup.retrofit2:retrofit-mock:${LIB_RETROFIT2_VERSION}")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+
+	compileOnly "org.projectlombok:lombok:$LIB_LOMBOK"
+	testCompileOnly "org.projectlombok:lombok:$LIB_LOMBOK"
 }
