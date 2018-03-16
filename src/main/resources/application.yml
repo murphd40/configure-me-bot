@@ -18,4 +18,4 @@ watsonwork:
 data:
   cassandra:
     trigger-config:
-      ttl-in-seconds: ${TRIGGER_CONFIG_TTL:5 * 60} # 5 minutes
+      ttl-in-seconds: ${TRIGGER_CONFIG_TTL:#{5 * 60}} # 5 minutes

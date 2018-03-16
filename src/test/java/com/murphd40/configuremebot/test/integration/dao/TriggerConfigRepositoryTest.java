@@ -10,6 +10,7 @@ import com.murphd40.configuremebot.dao.repository.TriggerConfigRepository;
 import com.murphd40.configuremebot.test.integration.BaseIntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -18,6 +19,9 @@ public class TriggerConfigRepositoryTest extends BaseIntegrationTest {
 
     @Autowired
     private TriggerConfigRepository triggerConfigRepository;
+
+    @Value("${TRIGGER_CONFIG_TTL}")
+    private int ttl;
 
     @Test
     public void findByTriggerId() {
@@ -36,7 +40,8 @@ public class TriggerConfigRepositoryTest extends BaseIntegrationTest {
 
         triggerConfigRepository.save(triggerConfig);
 
-        Uninterruptibles.sleepUninterruptibly(1100, TimeUnit.MILLISECONDS);
+        Uninterruptibles.sleepUninterruptibly(ttl, TimeUnit.SECONDS);
+        Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
 
         TriggerConfig result = triggerConfigRepository.findByTriggerId(triggerConfig.getTriggerId());
 
