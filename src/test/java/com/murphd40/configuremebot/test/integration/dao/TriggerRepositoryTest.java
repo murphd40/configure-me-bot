@@ -6,24 +6,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.datastax.driver.core.utils.UUIDs;
-import com.murphd40.configuremebot.Application;
 import com.murphd40.configuremebot.dao.EventType;
 import com.murphd40.configuremebot.dao.model.Trigger;
 import com.murphd40.configuremebot.dao.repository.TriggerRepository;
+import com.murphd40.configuremebot.test.integration.BaseIntegrationTest;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = Application.class)
-public class TriggerRepositoryTest {
+public class TriggerRepositoryTest extends BaseIntegrationTest {
 
     @Autowired
     private TriggerRepository triggerRepository;

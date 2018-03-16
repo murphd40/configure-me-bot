@@ -14,3 +14,8 @@ watsonwork:
   api:
     uri: ${WATSON_WORK_API_URI:https://api.watsonwork.ibm.com}
     oauth: ${WATSON_WORK_OAUTH:/oauth/authorize}
+
+data:
+  cassandra:
+    trigger-config:
+      ttl-in-seconds: ${TRIGGER_CONFIG_TTL:5 * 60} # 5 minutes
