@@ -3,8 +3,8 @@ package com.murphd40.configuremebot.dao.repository;
 import java.util.List;
 import java.util.UUID;
 
-import com.murphd40.configuremebot.dao.EventType;
 import com.murphd40.configuremebot.dao.model.Trigger;
+import com.murphd40.configuremebot.event.EventType;
 import org.springframework.data.cassandra.repository.CassandraRepository;
 import org.springframework.data.cassandra.repository.Query;
 

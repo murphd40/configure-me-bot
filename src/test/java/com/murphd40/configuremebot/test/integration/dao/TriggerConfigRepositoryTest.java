@@ -4,9 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 import com.datastax.driver.core.utils.UUIDs;
 import com.google.common.util.concurrent.Uninterruptibles;
-import com.murphd40.configuremebot.dao.EventType;
 import com.murphd40.configuremebot.dao.model.TriggerConfig;
 import com.murphd40.configuremebot.dao.repository.TriggerConfigRepository;
+import com.murphd40.configuremebot.event.EventType;
 import com.murphd40.configuremebot.test.integration.BaseIntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

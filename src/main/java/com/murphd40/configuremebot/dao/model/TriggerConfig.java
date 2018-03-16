@@ -3,7 +3,7 @@ package com.murphd40.configuremebot.dao.model;
 import java.util.UUID;
 
 import com.datastax.driver.core.DataType;
-import com.murphd40.configuremebot.dao.EventType;
+import com.murphd40.configuremebot.event.EventType;
 import lombok.Data;
 import org.springframework.cassandra.core.PrimaryKeyType;
 import org.springframework.data.cassandra.mapping.CassandraType;

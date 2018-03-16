@@ -10,4 +10,8 @@ public class VerificationEvent extends AbstractWebhookEvent {
 
     private String challenge;
 
+    @Override
+    public String getSpaceId() {
+        throw new UnsupportedOperationException();
+    }
 }

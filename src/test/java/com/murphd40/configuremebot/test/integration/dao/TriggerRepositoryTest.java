@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.datastax.driver.core.utils.UUIDs;
-import com.murphd40.configuremebot.dao.EventType;
 import com.murphd40.configuremebot.dao.model.Trigger;
 import com.murphd40.configuremebot.dao.repository.TriggerRepository;
+import com.murphd40.configuremebot.event.EventType;
 import com.murphd40.configuremebot.test.integration.BaseIntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,4 +16,6 @@ public interface WebhookEvent {
 
     String getType();
 
+    String getSpaceId();
+
 }
