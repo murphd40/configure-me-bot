@@ -5,7 +5,6 @@ import java.util.UUID;
 import com.datastax.driver.core.DataType;
 import com.murphd40.configuremebot.dao.EventType;
 import lombok.Data;
-import org.springframework.cassandra.core.Ordering;
 import org.springframework.cassandra.core.PrimaryKeyType;
 import org.springframework.data.cassandra.mapping.CassandraType;
 import org.springframework.data.cassandra.mapping.Column;
@@ -18,7 +17,7 @@ public class TriggerConfig {
 
     @CassandraType(type = DataType.Name.TIMEUUID)
     @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED, ordinal = 0)
-    private UUID id;
+    private UUID triggerId;
 
     @Column
     private EventType eventType;

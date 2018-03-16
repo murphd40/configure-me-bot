@@ -12,7 +12,6 @@ import org.springframework.data.cassandra.mapping.Column;
 import org.springframework.data.cassandra.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.mapping.Table;
 
-// todo - add triggers_by_event ((spaceId), eventType, id) MV
 @Data
 @Table("triggers")
 public class Trigger {
@@ -22,7 +21,7 @@ public class Trigger {
 
     @CassandraType(type = DataType.Name.TIMEUUID)
     @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED, ordinal = 1, ordering = Ordering.DESCENDING)
-    private UUID id;
+    private UUID triggerId;
 
     @Column
     private EventType eventType;
