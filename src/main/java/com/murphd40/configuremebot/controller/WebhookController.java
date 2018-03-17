@@ -1,9 +1,9 @@
 package com.murphd40.configuremebot.controller;
 
 import com.murphd40.configuremebot.client.model.Message;
-import com.murphd40.configuremebot.controller.request.MessageCreatedEvent;
-import com.murphd40.configuremebot.controller.request.VerificationEvent;
-import com.murphd40.configuremebot.controller.request.WebhookEvent;
+import com.murphd40.configuremebot.controller.request.webhook.MessageCreatedEvent;
+import com.murphd40.configuremebot.controller.request.webhook.VerificationEvent;
+import com.murphd40.configuremebot.controller.request.webhook.WebhookEvent;
 import com.murphd40.configuremebot.controller.response.VerificationResponse;
 import com.murphd40.configuremebot.service.AuthService;
 import com.murphd40.configuremebot.service.WatsonWorkService;

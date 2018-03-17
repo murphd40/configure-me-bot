@@ -56,7 +56,7 @@ public class TriggerRepositoryTest extends BaseIntegrationTest {
         List<Trigger> triggers = Stream.generate(this::createTrigger).limit(3).collect(Collectors.toList());
         triggers.forEach(trigger -> trigger.setSpaceId(spaceId));
 
-        EventType targetEventType = EventType.MEMBERS_ADDED;
+        EventType targetEventType = EventType.MESSAGE_ANNOTATION_ADDED;
         List<Trigger> targetTriggers = triggers.subList(1, 3);
         targetTriggers.forEach(trigger -> trigger.setEventType(targetEventType));
 

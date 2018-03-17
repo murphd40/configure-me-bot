@@ -3,7 +3,7 @@ package com.murphd40.configuremebot.service;
 import java.util.Collections;
 import java.util.UUID;
 
-import com.murphd40.configuremebot.controller.request.MessageCreatedEvent;
+import com.murphd40.configuremebot.controller.request.webhook.MessageCreatedEvent;
 import com.murphd40.configuremebot.dao.model.Trigger;
 import com.murphd40.configuremebot.dao.repository.TriggerRepository;
 import com.murphd40.configuremebot.event.EventType;
@@ -45,6 +45,18 @@ public class EventHandlerServiceTest {
         eventHandlerService.processWebhookEvent(event);
 
         Mockito.verify(triggerActions).sendMessage(Mockito.eq("Hello world"));
+    }
+
+    @Test
+    public void foo() {
+        Trigger trigger = createTrigger();
+        trigger.setAction("T(java.lang.System).out.println(event.foo)");
+
+        Mockito.when(triggerRepository.findBySpaceIdAndEventType(any(), any())).thenReturn(Collections.singletonList(trigger));
+
+        MessageCreatedEvent event = createEvent();
+
+        eventHandlerService.processWebhookEvent(event);
     }
 
     @Test

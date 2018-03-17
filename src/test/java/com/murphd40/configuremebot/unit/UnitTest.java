@@ -2,7 +2,7 @@ package com.murphd40.configuremebot.unit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.murphd40.configuremebot.controller.request.VerificationEvent;
+import com.murphd40.configuremebot.controller.request.webhook.VerificationEvent;
 import lombok.Data;
 import org.junit.Test;
 import org.springframework.expression.ExpressionParser;

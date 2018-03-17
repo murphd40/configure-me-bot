@@ -33,6 +33,7 @@ public class Message {
         annotation.setType("generic");
         Message message = new Message();
         message.setType("appMessage");
+        message.setVersion(1);
         message.setAnnotations(Collections.singletonList(annotation));
         return message;
     }

@@ -2,11 +2,12 @@ package com.murphd40.configuremebot.service;
 
 import java.util.List;
 
-import com.murphd40.configuremebot.controller.request.WebhookEvent;
+import com.murphd40.configuremebot.controller.request.webhook.WebhookEvent;
 import com.murphd40.configuremebot.dao.model.Trigger;
 import com.murphd40.configuremebot.dao.repository.TriggerRepository;
 import com.murphd40.configuremebot.event.EventContext;
 import com.murphd40.configuremebot.event.EventType;
+import com.murphd40.configuremebot.event.ThreadLocalContext;
 import com.murphd40.configuremebot.event.TriggerActions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.ExpressionParser;
@@ -40,6 +41,8 @@ public class EventHandlerService {
             return;
         }
 
+        ThreadLocalContext.setSpaceId(event.getSpaceId());
+
         EventContext context = new EventContext(triggerActions, event);
 
         ExpressionParser parser = new SpelExpressionParser();
@@ -55,6 +58,8 @@ public class EventHandlerService {
                 return parser.parseExpression(trigger.getCondition()).getValue(evaluationContext, Boolean.class);
             })
             .forEach(trigger -> parser.parseExpression(trigger.getAction()).getValue(evaluationContext));
+
+        ThreadLocalContext.clear();
     }
 
 }

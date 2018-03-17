@@ -1,4 +1,4 @@
-package com.murphd40.configuremebot.controller.request;
+package com.murphd40.configuremebot.controller.request.webhook;
 
 import java.io.IOException;
 import java.util.List;

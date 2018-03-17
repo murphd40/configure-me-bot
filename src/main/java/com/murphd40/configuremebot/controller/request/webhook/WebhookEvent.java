@@ -1,4 +1,4 @@
-package com.murphd40.configuremebot.controller.request;
+package com.murphd40.configuremebot.controller.request.webhook;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
