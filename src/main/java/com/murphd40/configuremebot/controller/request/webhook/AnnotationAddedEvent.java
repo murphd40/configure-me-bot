@@ -23,6 +23,7 @@ public class AnnotationAddedEvent extends AbstractWebhookEvent {
     private String annotationType;
     private String annotationId;
     private String userId;
+    private String userName;
     private Long time;
 
 }

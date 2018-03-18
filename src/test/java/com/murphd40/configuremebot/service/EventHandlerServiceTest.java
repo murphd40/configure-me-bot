@@ -48,18 +48,6 @@ public class EventHandlerServiceTest {
     }
 
     @Test
-    public void foo() {
-        Trigger trigger = createTrigger();
-        trigger.setAction("T(java.lang.System).out.println(event.foo)");
-
-        Mockito.when(triggerRepository.findBySpaceIdAndEventType(any(), any())).thenReturn(Collections.singletonList(trigger));
-
-        MessageCreatedEvent event = createEvent();
-
-        eventHandlerService.processWebhookEvent(event);
-    }
-
-    @Test
     public void conditionPasses() {
         Trigger trigger = createTrigger();
         trigger.setCondition("event.content.contains('world')");

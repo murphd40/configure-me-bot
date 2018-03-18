@@ -41,4 +41,22 @@ public class TriggerValidationServiceTest {
         assertTrue(triggerValidationService.validateTrigger(triggerConfig));
     }
 
+    @Test
+    public void badExpression() {
+        TriggerConfig triggerConfig = new TriggerConfig();
+        triggerConfig.setEventType(EventType.MESSAGE_CREATED);
+        triggerConfig.setAction("notAMethod()");
+
+        assertFalse(triggerValidationService.validateTrigger(triggerConfig));
+    }
+
+    @Test
+    public void fieldsDoNotMatchEventType() {
+        TriggerConfig triggerConfig = new TriggerConfig();
+        triggerConfig.setEventType(EventType.MESSAGE_ANNOTATION_ADDED);
+        triggerConfig.setAction("actions.sendMessage(event.content)");
+
+        assertFalse(triggerValidationService.validateTrigger(triggerConfig));
+    }
+
 }

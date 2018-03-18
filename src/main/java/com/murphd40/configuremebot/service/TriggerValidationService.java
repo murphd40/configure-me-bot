@@ -21,7 +21,7 @@ public class TriggerValidationService {
 
             WebhookEvent webhookEvent = eventClass.getDeclaredConstructor().newInstance();
 
-            EventContext context = new EventContext(new TriggerActions(), webhookEvent);
+            EventContext context = new EventContext(new DummyTriggerActions(), webhookEvent);
             ExpressionParser expressionParser = new SpelExpressionParser();
             EvaluationContext evaluationContext = new StandardEvaluationContext(context);
 
@@ -34,7 +34,6 @@ public class TriggerValidationService {
                 }
             }
 
-            // todo - fix this!
             return null != expressionParser.parseExpression(triggerConfig.getAction()).getValueType(evaluationContext)
                 && !containsIllegalMethods(triggerConfig.getAction());
 
@@ -44,8 +43,22 @@ public class TriggerValidationService {
         }
     }
 
+    // detects if an expression contains illegal method such as 'System.exit(0)'
     boolean containsIllegalMethods(String expression) {
         return expression.matches(".*T\\([^()]+\\).*");
+    }
+
+    // no-op version of TriggerActions used for validation
+    static class DummyTriggerActions extends TriggerActions {
+        @Override
+        public void sendMessage(String content) {
+            // no-op
+        }
+
+        @Override
+        public void sendMessage(String content, String color, String title) {
+            // no-op
+        }
     }
 
 }

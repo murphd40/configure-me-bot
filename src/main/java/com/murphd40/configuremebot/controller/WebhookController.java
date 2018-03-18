@@ -1,11 +1,10 @@
 package com.murphd40.configuremebot.controller;
 
-import com.murphd40.configuremebot.client.model.Message;
-import com.murphd40.configuremebot.controller.request.webhook.MessageCreatedEvent;
 import com.murphd40.configuremebot.controller.request.webhook.VerificationEvent;
 import com.murphd40.configuremebot.controller.request.webhook.WebhookEvent;
 import com.murphd40.configuremebot.controller.response.VerificationResponse;
 import com.murphd40.configuremebot.service.AuthService;
+import com.murphd40.configuremebot.service.EventHandlerService;
 import com.murphd40.configuremebot.service.WatsonWorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +25,8 @@ public class WebhookController {
     private AuthService authService;
     @Autowired
     private WatsonWorkService watsonWorkService;
+    @Autowired
+    private EventHandlerService eventHandlerService;
 
     @PostMapping(path = "/webhook")
     public ResponseEntity<?> webhook(@RequestHeader("X-OUTBOUND-TOKEN") String outboundToken, @RequestBody WebhookEvent webhookEvent) {
@@ -47,15 +48,19 @@ public class WebhookController {
 
     private ResponseEntity<?> processWebhookEvent(WebhookEvent webhookEvent) {
 
+//        Mono.just(webhookEvent)
+//            .doOnNext(event -> System.out.println("message received"))
+//            .filter(MessageCreatedEvent.class::isInstance)
+//            .map(MessageCreatedEvent.class::cast)
+//            .doOnNext(messageEvent -> watsonWorkService.createMessage(messageEvent.getSpaceId(), Message.appMessage(messageEvent.getContent())))
+//            .doOnError(throwable -> System.out.println("Error!: " + throwable))
+//            .doOnSuccess(messageCreatedEvent -> System.out.println("Success!"))
+//            .subscribe();
+
         Mono.just(webhookEvent)
-            .doOnNext(event -> System.out.println("message received"))
-//            .delayElement(Duration.ofSeconds(10L))
-            .filter(MessageCreatedEvent.class::isInstance)
-            .map(MessageCreatedEvent.class::cast)
-            .doOnNext(messageEvent -> watsonWorkService.createMessage(messageEvent.getSpaceId(), Message.appMessage(messageEvent.getContent())))
-            .doOnError(throwable -> System.out.println("Error!: " + throwable))
-            .doOnSuccess(messageCreatedEvent -> System.out.println("Success!"))
+            .doOnNext(eventHandlerService::processWebhookEvent)
             .subscribe();
+
 
         return ResponseEntity.ok().build();
     }
