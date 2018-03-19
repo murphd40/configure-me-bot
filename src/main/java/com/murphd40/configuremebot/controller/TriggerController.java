@@ -20,14 +20,14 @@ public class TriggerController {
     @Autowired
     private TriggerService triggerService;
 
-    @PostMapping
-    public ResponseEntity<String> configureTrigger(@Valid @RequestBody CreateTrigger createTrigger) {
+    @PostMapping(produces = "application/json")
+    public ResponseEntity<TriggerConfig> configureTrigger(@Valid @RequestBody CreateTrigger createTrigger) {
 
         TriggerConfig triggerConfig = new TriggerConfig();
         BeanUtils.copyProperties(createTrigger, triggerConfig);
 
         triggerConfig = triggerService.createTrigger(triggerConfig);
 
-        return ResponseEntity.ok(triggerConfig.getTriggerId().toString());
+        return ResponseEntity.ok(triggerConfig);
     }
 }

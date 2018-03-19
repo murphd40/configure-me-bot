@@ -1,5 +1,6 @@
 package com.murphd40.configuremebot.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.datastax.driver.core.utils.UUIDs;
@@ -45,6 +46,14 @@ public class TriggerService {
         triggerRepository.save(trigger);
 
         return true;
+    }
+
+    public boolean deleteTriggerFromSpace(UUID triggerId, String spaceId) {
+        return triggerRepository.deleteTrigger(spaceId, triggerId);
+    }
+
+    public List<Trigger> getTriggersForSpace(String spaceId) {
+        return triggerRepository.findBySpaceId(spaceId);
     }
 
 }

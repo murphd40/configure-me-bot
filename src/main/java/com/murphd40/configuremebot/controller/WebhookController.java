@@ -1,8 +1,10 @@
 package com.murphd40.configuremebot.controller;
 
+import com.murphd40.configuremebot.controller.request.webhook.AnnotationAddedEvent;
 import com.murphd40.configuremebot.controller.request.webhook.VerificationEvent;
 import com.murphd40.configuremebot.controller.request.webhook.WebhookEvent;
 import com.murphd40.configuremebot.controller.response.VerificationResponse;
+import com.murphd40.configuremebot.service.ActionFulfillmentService;
 import com.murphd40.configuremebot.service.AuthService;
 import com.murphd40.configuremebot.service.EventHandlerService;
 import com.murphd40.configuremebot.service.WatsonWorkService;
@@ -27,6 +29,8 @@ public class WebhookController {
     private WatsonWorkService watsonWorkService;
     @Autowired
     private EventHandlerService eventHandlerService;
+    @Autowired
+    private ActionFulfillmentService actionFulfillmentService;
 
     @PostMapping(path = "/webhook")
     public ResponseEntity<?> webhook(@RequestHeader("X-OUTBOUND-TOKEN") String outboundToken, @RequestBody WebhookEvent webhookEvent) {
@@ -56,6 +60,12 @@ public class WebhookController {
 //            .doOnError(throwable -> System.out.println("Error!: " + throwable))
 //            .doOnSuccess(messageCreatedEvent -> System.out.println("Success!"))
 //            .subscribe();
+
+        Mono.just(webhookEvent)
+            .filter(AnnotationAddedEvent.class::isInstance)
+            .cast(AnnotationAddedEvent.class)
+            .doOnNext(actionFulfillmentService::handleActionFulfillmentEvents)
+            .block();
 
         Mono.just(webhookEvent)
             .doOnNext(eventHandlerService::processWebhookEvent)

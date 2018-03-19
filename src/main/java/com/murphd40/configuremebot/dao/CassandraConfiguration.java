@@ -18,7 +18,7 @@ public class CassandraConfiguration extends AbstractCassandraConfiguration {
 
     @Override
     protected List<CreateKeyspaceSpecification> getKeyspaceCreations() {
-        return Collections.singletonList(CreateKeyspaceSpecification.createKeyspace(getKeyspaceName()).ifNotExists().withSimpleReplication(3));
+        return Collections.singletonList(CreateKeyspaceSpecification.createKeyspace(getKeyspaceName()).ifNotExists().withSimpleReplication(1));
     }
 
     @Override

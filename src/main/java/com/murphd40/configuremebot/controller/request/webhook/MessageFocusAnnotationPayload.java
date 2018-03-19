@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 
 /**
@@ -18,15 +17,8 @@ import lombok.Data;
 public class MessageFocusAnnotationPayload extends AnnotationPayload {
 
     @JsonCreator
-    public static MessageFocusAnnotationPayload create(String s) throws IOException {
-        String cleanJson = s
-            .replace("\\", "")
-            .replace("\"{", "{")
-            .replace("}\"", "}");
-
-        JsonNode jsonNode = new ObjectMapper().reader().readTree(cleanJson);
-
-        return new ObjectMapper().treeToValue(jsonNode, MessageFocusAnnotationPayload.class);
+    public static MessageFocusAnnotationPayload create(String json) throws IOException {
+        return cleanJsonAndCreate(json, MessageFocusAnnotationPayload.class);
     }
 
     private String type;

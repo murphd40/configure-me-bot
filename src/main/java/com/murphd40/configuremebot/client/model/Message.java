@@ -16,6 +16,7 @@ public class Message {
     private double version;
     private List<Annotation> annotations;
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public static class Annotation {
 
