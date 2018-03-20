@@ -1,0 +1,32 @@
+mutation {
+  createTargetedMessage(input: {
+    conversationId: "${conversationId}"
+    targetUserId: "${targetUserId}"
+    targetDialogId: "${targetDialogId}"
+    attachments: [
+      {
+        type: CARD
+        cardInput: {
+          type: INFORMATION
+          informationCardInput: {
+            title: "title"
+            subtitle: "subtitle"
+            text: "this is an information card"
+            date: 1500573338000
+            buttons: [{
+              style: PRIMARY
+              text: "this is a primary button"
+              payload: "payload"
+            }, {
+              style: SECONDARY
+              text: "this is a secondary button"
+              payload: "payload"
+            }]
+          }
+        }
+      }
+    ]
+  }) {
+    successful
+  }
+}

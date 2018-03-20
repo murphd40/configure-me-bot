@@ -15,6 +15,10 @@ watsonwork:
     uri: ${WATSON_WORK_API_URI:https://api.watsonwork.ibm.com}
     oauth: ${WATSON_WORK_OAUTH:/oauth/authorize}
 
+spring:
+  freemarker:
+    template-loader-path: classpath:graphql/
+
 data:
   cassandra:
     trigger-config:
