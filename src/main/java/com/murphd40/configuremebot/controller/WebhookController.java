@@ -55,15 +55,6 @@ public class WebhookController {
 
     private ResponseEntity<?> processWebhookEvent(WebhookEvent webhookEvent) {
 
-//        Mono.just(webhookEvent)
-//            .doOnNext(event -> System.out.println("message received"))
-//            .filter(MessageCreatedEvent.class::isInstance)
-//            .map(MessageCreatedEvent.class::cast)
-//            .doOnNext(messageEvent -> watsonWorkService.createMessage(messageEvent.getSpaceId(), Message.appMessage(messageEvent.getContent())))
-//            .doOnError(throwable -> System.out.println("Error!: " + throwable))
-//            .doOnSuccess(messageCreatedEvent -> System.out.println("Success!"))
-//            .subscribe();
-
         Mono.just(webhookEvent)
             .filter(event -> !watsonWorkspaceProperties.getApp().getId().equals(event.getUserId()))
             .filter(AnnotationAddedEvent.class::isInstance)
@@ -75,7 +66,6 @@ public class WebhookController {
             .filter(event -> !watsonWorkspaceProperties.getApp().getId().equals(event.getUserId()))
             .doOnNext(eventHandlerService::processWebhookEvent)
             .subscribe();
-
 
         return ResponseEntity.ok().build();
     }

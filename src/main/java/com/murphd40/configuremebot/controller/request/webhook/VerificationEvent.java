@@ -16,4 +16,10 @@ public class VerificationEvent extends AbstractWebhookEvent {
     public String getSpaceId() {
         throw new UnsupportedOperationException();
     }
+
+    @JsonIgnore
+    @Override
+    public String getUserId() {
+        throw new UnsupportedOperationException();
+    }
 }
