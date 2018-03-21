@@ -4,27 +4,29 @@ mutation {
     targetUserId: "${targetUserId}"
     targetDialogId: "${targetDialogId}"
     attachments: [
+      <#list attachments as attachment>
       {
-        type: CARD
+        type: ${attachment.type}
         cardInput: {
-          type: INFORMATION
+          type: ${attachment.payload.type}
           informationCardInput: {
-            title: "title"
-            subtitle: "subtitle"
-            text: "this is an information card"
-            date: 1500573338000
-            buttons: [{
-              style: PRIMARY
-              text: "this is a primary button"
-              payload: "payload"
-            }, {
-              style: SECONDARY
-              text: "this is a secondary button"
-              payload: "payload"
-            }]
+            title: "${attachment.payload.payload.title}"
+            subtitle: "${attachment.payload.payload.subtitle}"
+            text: "${attachment.payload.payload.text}"
+            date: ${attachment.payload.payload.date?long?c}
+            buttons: [
+              <#list attachment.payload.payload.buttons![] as button>
+              {
+                style: ${button.style}
+                text: "${button.text}"
+                payload: "${button.payload}"
+              }
+              </#list>
+            ]
           }
         }
       }
+      </#list>
     ]
   }) {
     successful

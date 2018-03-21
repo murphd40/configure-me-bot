@@ -1,6 +1,9 @@
 package com.murphd40.configuremebot.service;
 
 import com.murphd40.configuremebot.client.WatsonWorkClient;
+import com.murphd40.configuremebot.client.graphql.GraphQLQuery;
+import com.murphd40.configuremebot.client.graphql.GraphQLQueryBuilder;
+import com.murphd40.configuremebot.client.graphql.TargetedMessage;
 import com.murphd40.configuremebot.client.model.Message;
 import com.murphd40.configuremebot.configuration.WatsonWorkspaceProperties;
 import lombok.SneakyThrows;
@@ -23,6 +26,9 @@ public class WatsonWorkService {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private GraphQLQueryBuilder graphQLQueryBuilder;
+
     @SneakyThrows
     public void createMessage(String spaceId, Message message) {
         Response<Message> response = watsonWorkClient.createMessage(authService.getAppAuthToken(), spaceId, message).execute();
@@ -30,6 +36,12 @@ public class WatsonWorkService {
         if (!response.isSuccessful()) {
             throw new RuntimeException("Failed to send message");
         }
+    }
+
+    @SneakyThrows
+    public void sendTargetedMessage(TargetedMessage targetedMessage) {
+        GraphQLQuery query = graphQLQueryBuilder.buildTargetedMessageQuery(targetedMessage);
+        watsonWorkClient.sendTargetedMessage(authService.getAppAuthToken(), query).execute();
     }
 
 }

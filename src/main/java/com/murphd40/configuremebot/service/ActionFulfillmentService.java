@@ -2,15 +2,21 @@ package com.murphd40.configuremebot.service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.murphd40.configuremebot.actionfulfillment.Action;
 import com.murphd40.configuremebot.actionfulfillment.ActionParser;
+import com.murphd40.configuremebot.client.graphql.Attachment;
+import com.murphd40.configuremebot.client.graphql.Card;
+import com.murphd40.configuremebot.client.graphql.InformationCard;
+import com.murphd40.configuremebot.client.graphql.TargetedMessage;
 import com.murphd40.configuremebot.controller.request.webhook.ActionSelectedAnnotationPayload;
 import com.murphd40.configuremebot.controller.request.webhook.AnnotationAddedEvent;
 import com.murphd40.configuremebot.dao.model.Trigger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @Service
@@ -18,6 +24,9 @@ public class ActionFulfillmentService {
 
     @Autowired
     private TriggerService triggerService;
+
+    @Autowired
+    private WatsonWorkService watsonWorkService;
 
     public void handleActionFulfillmentEvents(AnnotationAddedEvent event) {
 
@@ -69,9 +78,39 @@ public class ActionFulfillmentService {
                 List<Trigger> triggers = triggerService.getTriggersForSpace(spaceId);
 
                 log.info("Retrieved triggers for space. spaceId = {}, triggers = {}", spaceId, triggers);
+
+                TargetedMessage targetedMessage = TargetedMessage.builder()
+                    .conversationId(spaceId)
+                    .targetDialogId(payload.getTargetDialogId())
+                    .targetUserId(event.getUserId())
+                    .attachments(createCardsForTriggers(triggers)).build();
+
+                watsonWorkService.sendTargetedMessage(targetedMessage);
+
                 break;
         }
 
+    }
+
+    private List<Attachment> createCardsForTriggers(List<Trigger> triggers) {
+        return triggers.stream().map(this::createCardForTrigger).collect(Collectors.toList());
+    }
+
+    private Attachment createCardForTrigger(Trigger trigger) {
+        StringBuilder body = new StringBuilder();
+
+        if (!StringUtils.isEmpty(trigger.getCondition())) {
+            body.append(String.format("*Condition:* `%s`", trigger.getCondition())).append("\\n");
+        }
+        body.append(String.format("*Action:* `%s`", trigger.getAction()));
+
+        InformationCard payload = InformationCard.builder()
+            .date(System.currentTimeMillis())
+            .title("Trigger")
+            .subtitle(trigger.getTitle())
+            .text(body.toString()).build();
+
+        return new Attachment(Attachment.AttachmentType.CARD, new Card(Card.CardType.INFORMATION, payload));
     }
 
 }

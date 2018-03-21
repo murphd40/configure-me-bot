@@ -18,4 +18,6 @@ public interface WebhookEvent {
 
     String getSpaceId();
 
+    String getUserId();
+
 }

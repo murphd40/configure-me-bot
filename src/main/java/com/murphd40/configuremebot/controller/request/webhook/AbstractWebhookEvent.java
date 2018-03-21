@@ -9,5 +9,6 @@ import lombok.Data;
 abstract class AbstractWebhookEvent implements WebhookEvent {
 
     private String type;
+    private String userId;
 
 }

@@ -1,0 +1,15 @@
+mutation {
+  createMessage(input: {
+    conversationId: "5aa26de8e4b092ef0b999d63"
+    annotations: {
+      genericAnnotation: {
+        title: "hello"
+        text: "HELLO WORLD"
+      }
+    }
+  }) {
+    message {
+      id
+    }
+  }
+}

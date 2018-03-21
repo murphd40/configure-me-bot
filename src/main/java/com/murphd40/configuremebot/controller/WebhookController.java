@@ -1,5 +1,6 @@
 package com.murphd40.configuremebot.controller;
 
+import com.murphd40.configuremebot.configuration.WatsonWorkspaceProperties;
 import com.murphd40.configuremebot.controller.request.webhook.AnnotationAddedEvent;
 import com.murphd40.configuremebot.controller.request.webhook.VerificationEvent;
 import com.murphd40.configuremebot.controller.request.webhook.WebhookEvent;
@@ -31,6 +32,8 @@ public class WebhookController {
     private EventHandlerService eventHandlerService;
     @Autowired
     private ActionFulfillmentService actionFulfillmentService;
+    @Autowired
+    private WatsonWorkspaceProperties watsonWorkspaceProperties;
 
     @PostMapping(path = "/webhook")
     public ResponseEntity<?> webhook(@RequestHeader("X-OUTBOUND-TOKEN") String outboundToken, @RequestBody WebhookEvent webhookEvent) {
@@ -62,12 +65,14 @@ public class WebhookController {
 //            .subscribe();
 
         Mono.just(webhookEvent)
+            .filter(event -> !watsonWorkspaceProperties.getApp().getId().equals(event.getUserId()))
             .filter(AnnotationAddedEvent.class::isInstance)
             .cast(AnnotationAddedEvent.class)
             .doOnNext(actionFulfillmentService::handleActionFulfillmentEvents)
             .block();
 
         Mono.just(webhookEvent)
+            .filter(event -> !watsonWorkspaceProperties.getApp().getId().equals(event.getUserId()))
             .doOnNext(eventHandlerService::processWebhookEvent)
             .subscribe();
 
