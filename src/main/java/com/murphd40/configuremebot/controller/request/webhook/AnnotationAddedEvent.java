@@ -19,7 +19,6 @@ public class AnnotationAddedEvent extends AbstractWebhookEvent {
         @JsonSubTypes.Type(value = ActionSelectedAnnotationPayload.class, name = "actionSelected"),
     })
     private AnnotationPayload annotationPayload;
-//    private String annotationPayload;
     private String messageId;
     private String annotationType;
     private String annotationId;

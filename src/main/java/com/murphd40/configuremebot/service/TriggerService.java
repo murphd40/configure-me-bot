@@ -31,11 +31,11 @@ public class TriggerService {
         return triggerConfigRepository.save(triggerConfig);
     }
 
-    public boolean addTriggerToSpace(UUID triggerId, String spaceId, String userId) {
+    public Trigger addTriggerToSpace(UUID triggerId, String spaceId, String userId) {
         TriggerConfig triggerConfig = triggerConfigRepository.findByTriggerId(triggerId);
 
         if (triggerConfig == null) {
-            return false;
+            return null;
         }
 
         Trigger trigger = new Trigger();
@@ -45,11 +45,11 @@ public class TriggerService {
 
         triggerRepository.save(trigger);
 
-        return true;
+        return trigger;
     }
 
-    public boolean deleteTriggerFromSpace(UUID triggerId, String spaceId) {
-        return triggerRepository.deleteTrigger(spaceId, triggerId);
+    public void deleteTriggerFromSpace(UUID triggerId, String spaceId) {
+        triggerRepository.deleteTrigger(spaceId, triggerId);
     }
 
     public List<Trigger> getTriggersForSpace(String spaceId) {

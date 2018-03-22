@@ -1,5 +1,6 @@
 package com.murphd40.configuremebot.service;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.datastax.driver.core.utils.UUIDs;
 import com.murphd40.configuremebot.actionfulfillment.Action;
 import com.murphd40.configuremebot.actionfulfillment.ActionParser;
 import com.murphd40.configuremebot.actionfulfillment.ActionType;
@@ -14,6 +16,7 @@ import com.murphd40.configuremebot.client.graphql.request.AnnotationWrapper;
 import com.murphd40.configuremebot.client.graphql.request.Attachment;
 import com.murphd40.configuremebot.client.graphql.request.Card;
 import com.murphd40.configuremebot.client.graphql.request.GenericAnnotation;
+import com.murphd40.configuremebot.client.graphql.request.GenericAnnotation.Button.PostbackButton;
 import com.murphd40.configuremebot.client.graphql.request.InformationCard;
 import com.murphd40.configuremebot.client.graphql.request.InformationCard.Button;
 import com.murphd40.configuremebot.client.graphql.request.TargetedMessage;
@@ -31,6 +34,7 @@ import org.springframework.util.StringUtils;
 @Service
 public class ActionFulfillmentService {
 
+    public static final String BLANK_LINE = "\\u200B\\n";
     @Autowired
     private TriggerService triggerService;
 
@@ -63,16 +67,24 @@ public class ActionFulfillmentService {
                 String triggerIdString = action.getParams().get(0);
                 UUID triggerId = UUID.fromString(triggerIdString);
 
-                boolean success = triggerService.addTriggerToSpace(triggerId, spaceId, event.getUserId());
+                Trigger trigger = triggerService.addTriggerToSpace(triggerId, spaceId, event.getUserId());
+                boolean success = trigger != null;
 
+                StringBuilder stringBuilder = new StringBuilder();
                 if (success) {
                     log.info("Successfully added trigger to space. triggerId = {}, spaceId = {}", triggerId, spaceId);
-                    annotation = new AnnotationWrapper(GenericAnnotation.builder().text("Successfully added trigger to space").build());
+                    stringBuilder.append(BLANK_LINE)
+                        .append("*Success!*").append("\\n")
+                        .append(BLANK_LINE)
+                        .append(String.format("'%s' has been added to the space", trigger.getTitle()));
+
                 } else {
                     log.error("Failed to add trigger to space. triggerId = {}, spaceId = {}", triggerId, spaceId);
-                    annotation = new AnnotationWrapper(GenericAnnotation.builder().text("Failed to add trigger to space").build());
+                    stringBuilder.append(BLANK_LINE)
+                        .append("Failed to add trigger to space");
                 }
 
+                annotation = new AnnotationWrapper(GenericAnnotation.builder().text(stringBuilder.toString()).build());
                 watsonWorkService.sendTargetedMessage(buildTargetedMessageWithAnnotations(event, Collections.singletonList(annotation)));
 
                 break;
@@ -80,16 +92,25 @@ public class ActionFulfillmentService {
                 triggerIdString = action.getParams().get(0);
                 triggerId = UUID.fromString(triggerIdString);
 
-                success = triggerService.deleteTriggerFromSpace(triggerId, event.getSpaceId());
+                trigger = triggerService.findTrigger(spaceId, triggerId);
 
-                if (success) {
+                triggerService.deleteTriggerFromSpace(triggerId, event.getSpaceId());
+
+                stringBuilder = new StringBuilder();
+                if (trigger != null) {
                     log.info("Successfully removed trigger from space. triggerId = {}, spaceId = {}", triggerId, spaceId);
+
+                    stringBuilder.append(BLANK_LINE)
+                        .append("*Success!*").append("\\n")
+                        .append(BLANK_LINE)
+                        .append(String.format("'%s' has been removed from the space", trigger.getTitle()));
                 } else {
                     log.error("Failed to remove trigger to space. triggerId = {}, spaceId = {}", triggerId, spaceId);
+                    stringBuilder.append(BLANK_LINE).append("Failed to remove trigger from space");
                 }
 
                 annotation = new AnnotationWrapper(
-                    GenericAnnotation.builder().text("Successfully removed trigger from space").build());
+                    GenericAnnotation.builder().text(stringBuilder.toString()).build());
 
                 watsonWorkService.sendTargetedMessage(buildTargetedMessageWithAnnotations(event, Collections.singletonList(annotation)));
 
@@ -104,27 +125,34 @@ public class ActionFulfillmentService {
                     .collect(Collectors.toMap(Person::getId, Function.identity()));
 
                 List<Attachment> attachments = triggers.stream()
-                    .map(trigger -> createCardForTrigger(trigger, peopleById.get(trigger.getCreatorId())))
+                    .map(t -> createCardForTrigger(t, peopleById.get(t.getCreatorId())))
                     .collect(Collectors.toList());
 
                 watsonWorkService.sendTargetedMessage(buildTargetedMessageWithAttachments(event, attachments));
+
                 break;
             case TRIGGER_INFO:
                 triggerIdString = action.getParams().get(0);
                 triggerId = UUID.fromString(triggerIdString);
 
-                Trigger trigger = triggerService.findTrigger(spaceId, triggerId);
+                trigger = triggerService.findTrigger(spaceId, triggerId);
 
-                annotation = createAnnotationForTrigger(trigger);
+                Person creator = watsonWorkService.getPeople(Collections.singletonList(trigger.getCreatorId())).get(0);
+
+                annotation = createAnnotationForTrigger(trigger, creator);
 
                 watsonWorkService.sendTargetedMessage(buildTargetedMessageWithAnnotations(event, Collections.singletonList(annotation)));
         }
 
     }
 
-    private AnnotationWrapper createAnnotationForTrigger(Trigger trigger) {
+    private AnnotationWrapper createAnnotationForTrigger(Trigger trigger, Person creator) {
 
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder("\\u200B \\n");
+
+//        builder.append(String.format("*Title:* %s", trigger.getTitle())).append("\\n \\u200B \\n");
+        builder.append(String.format("*Added by:* %s", creator.getDisplayName())).append("\\n \\u200B \\n");
+        builder.append(String.format("*Event type:* %s", trigger.getEventType())).append("\\n \\u200B \\n");
 
         if (StringUtils.hasText(trigger.getCondition())) {
             builder
@@ -140,15 +168,16 @@ public class ActionFulfillmentService {
             .append(trigger.getAction()).append("\\n")
             .append("```").append("\\n");
 
-        GenericAnnotation.Button.PostbackButton postbackButton = new GenericAnnotation.Button.PostbackButton(
-            GenericAnnotation.Button.PostbackButton.Style.PRIMARY,
-            String.format("%s %s", ActionType.DELETE_TRIGGER.getActionId(), trigger.getTriggerId()),
-            "Remove from space");
+        PostbackButton deleteButton = new PostbackButton(PostbackButton.Style.PRIMARY,
+            String.format("%s %s", ActionType.DELETE_TRIGGER.getActionId(), trigger.getTriggerId()), "Remove from space");
+
+        PostbackButton backButton = new PostbackButton(PostbackButton.Style.SECONDARY,
+            ActionType.GET_TRIGGERS.getActionId(), "Back");
 
         GenericAnnotation annotation = GenericAnnotation.builder()
             .text(builder.toString())
             .title(trigger.getTitle())
-            .buttons(Collections.singletonList(new GenericAnnotation.Button(postbackButton)))
+            .buttons(Arrays.asList(new GenericAnnotation.Button(deleteButton), new GenericAnnotation.Button(backButton)))
             .build();
 
         return new AnnotationWrapper(annotation);
@@ -156,15 +185,15 @@ public class ActionFulfillmentService {
 
     private Attachment createCardForTrigger(Trigger trigger, Person creator) {
 
-        String body = String.format("Created by %s", creator.getDisplayName());
+        String body = String.format("Added by %s", creator.getDisplayName());
 
         String buttonPayload = String.format("%s %s", ActionType.TRIGGER_INFO.getActionId(), trigger.getTriggerId());
         Button button = new Button(Button.ButtonStyle.PRIMARY, "See more", buttonPayload);
 
         InformationCard payload = InformationCard.builder()
-            .date(trigger.getTriggerId().timestamp())
-            .title("Trigger")
-            .subtitle(trigger.getTitle())
+            .date(UUIDs.unixTimestamp(trigger.getTriggerId()))
+            .title(trigger.getTitle())
+            .subtitle("trigger")
             .text(body)
             .buttons(Collections.singletonList(button))
             .build();

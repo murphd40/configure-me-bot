@@ -19,7 +19,7 @@ public interface TriggerRepository extends CassandraRepository<Trigger> {
     @Query("SELECT * FROM triggers_by_event WHERE spaceId = ?0 AND eventType = ?1")
     List<Trigger> findBySpaceIdAndEventType(String spaceId, EventType eventType);
 
-    @Query("DELETE FROM triggers WHERE spaceId = ?0 AND triggerId = ?1 IF EXISTS")
-    boolean deleteTrigger(String spaceId, UUID triggerId);
+    @Query("DELETE FROM triggers WHERE spaceId = ?0 AND triggerId = ?1")
+    void deleteTrigger(String spaceId, UUID triggerId);
 
 }
