@@ -60,7 +60,7 @@ public class WebhookController {
             .filter(AnnotationAddedEvent.class::isInstance)
             .cast(AnnotationAddedEvent.class)
             .doOnNext(actionFulfillmentService::handleActionFulfillmentEvents)
-            .block();
+            .subscribe();
 
         Mono.just(webhookEvent)
             .filter(event -> !watsonWorkspaceProperties.getApp().getId().equals(event.getUserId()))

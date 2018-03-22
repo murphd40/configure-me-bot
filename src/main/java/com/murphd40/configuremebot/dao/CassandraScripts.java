@@ -12,6 +12,7 @@ final class CassandraScripts {
             "action text," +
             "condition text," +
             "creatorId text," +
+//            "creatorName text," +
             "eventType text," +
             "title text," +
             "PRIMARY KEY ((spaceId), triggerId)" +

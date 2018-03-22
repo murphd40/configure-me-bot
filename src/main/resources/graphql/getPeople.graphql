@@ -1,0 +1,13 @@
+{
+  people(id: [
+  <#list ids as id>
+  "${id}"
+  </#list>
+  ]) {
+    items {
+        displayName
+        email
+        extId
+    }
+  }
+}

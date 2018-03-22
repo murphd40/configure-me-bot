@@ -1,5 +1,9 @@
 package com.murphd40.configuremebot.client.graphql;
 
+import java.util.Collections;
+import java.util.List;
+
+import com.murphd40.configuremebot.client.graphql.request.TargetedMessage;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.SneakyThrows;
@@ -17,6 +21,12 @@ public class GraphQLQueryBuilder {
     public GraphQLQuery buildTargetedMessageQuery(TargetedMessage targetedMessage) {
         Template template = freeMarkerConfig.getTemplate("createTargetedMessage.graphql");
         return new GraphQLQuery(FreeMarkerTemplateUtils.processTemplateIntoString(template, targetedMessage));
+    }
+
+    @SneakyThrows
+    public GraphQLQuery buildGetPeopleQuery(List<String> personIds) {
+        Template template = freeMarkerConfig.getTemplate("getPeople.graphql");
+        return new GraphQLQuery(FreeMarkerTemplateUtils.processTemplateIntoString(template, Collections.singletonMap("ids", personIds)));
     }
 
 }

@@ -19,10 +19,6 @@ public interface WatsonWorkClient {
 
     @POST("/graphql")
     @Headers({"Content-Type: application/json", "x-graphql-view: PUBLIC, BETA"})
-    Call<JsonNode> sendTargetedMessage(@Header("Authorization") String authToken, @Body GraphQLQuery body);
-
-//    @POST("/graphql")
-//    @Headers({"Content-Type: application/json", "x-graphql-view: BETA"})
-//    Call<String> sendMessage(@Header("Authorization") String authToken, @Body String body);
+    Call<JsonNode> postGraphQLQuery(@Header("Authorization") String authToken, @Body GraphQLQuery body);
 
 }

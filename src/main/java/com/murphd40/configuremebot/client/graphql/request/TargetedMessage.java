@@ -1,4 +1,4 @@
-package com.murphd40.configuremebot.client.graphql;
+package com.murphd40.configuremebot.client.graphql.request;
 
 import java.util.List;
 
@@ -18,5 +18,6 @@ public class TargetedMessage {
     private String targetDialogId;
 
     private List<Attachment> attachments;
+    private List<AnnotationWrapper> annotations;
 
 }

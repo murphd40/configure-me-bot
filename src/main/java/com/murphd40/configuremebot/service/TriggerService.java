@@ -56,4 +56,8 @@ public class TriggerService {
         return triggerRepository.findBySpaceId(spaceId);
     }
 
+    public Trigger findTrigger(String spaceId, UUID triggerId) {
+        return triggerRepository.findTrigger(spaceId, triggerId);
+    }
+
 }

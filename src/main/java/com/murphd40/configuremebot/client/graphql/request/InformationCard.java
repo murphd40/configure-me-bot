@@ -1,4 +1,4 @@
-package com.murphd40.configuremebot.client.graphql;
+package com.murphd40.configuremebot.client.graphql.request;
 
 import java.util.List;
 

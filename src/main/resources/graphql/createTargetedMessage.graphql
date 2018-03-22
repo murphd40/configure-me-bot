@@ -3,6 +3,37 @@ mutation {
     conversationId: "${conversationId}"
     targetUserId: "${targetUserId}"
     targetDialogId: "${targetDialogId}"
+    annotations: [
+      <#list annotations as annotation>
+      {
+        genericAnnotation: {
+          <#if annotation.genericAnnotation.title>
+          title: "${annotation.genericAnnotation.title}"
+          </#if>
+          text: "${annotation.genericAnnotation.text}"
+          <#if annotation.genericAnnotation.color>
+          color: "${annotation.genericAnnotation.color}"
+          </#if>
+          <#if annotation.genericAnnotation.actor>
+          actor: {
+            name: "{annotation.genericAnnotation.actor.name}"
+          }
+          </#if>
+          buttons: [
+            <#list annotation.genericAnnotation.buttons as button>
+            {
+               postbackButton: {
+                 style: {button.postbackButton.style}
+                 id: "{button.postbackButton.id}"
+                 title: "{button.postbackButton.title}"
+               }
+            }
+            </#list>
+          ]
+        }
+      }
+      </#list>
+    ]
     attachments: [
       <#list attachments as attachment>
       {
