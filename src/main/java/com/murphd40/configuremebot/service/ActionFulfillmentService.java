@@ -57,6 +57,7 @@ public class ActionFulfillmentService {
         
         String spaceId = event.getSpaceId();
 
+        AnnotationWrapper annotation;
         switch (action.getType()) {
             case ADD_TRIGGER:
                 String triggerIdString = action.getParams().get(0);
@@ -66,9 +67,13 @@ public class ActionFulfillmentService {
 
                 if (success) {
                     log.info("Successfully added trigger to space. triggerId = {}, spaceId = {}", triggerId, spaceId);
+                    annotation = new AnnotationWrapper(GenericAnnotation.builder().text("Successfully added trigger to space").build());
                 } else {
                     log.error("Failed to add trigger to space. triggerId = {}, spaceId = {}", triggerId, spaceId);
+                    annotation = new AnnotationWrapper(GenericAnnotation.builder().text("Failed to add trigger to space").build());
                 }
+
+                watsonWorkService.sendTargetedMessage(buildTargetedMessageWithAnnotations(event, Collections.singletonList(annotation)));
 
                 break;
             case DELETE_TRIGGER:
@@ -82,6 +87,12 @@ public class ActionFulfillmentService {
                 } else {
                     log.error("Failed to remove trigger to space. triggerId = {}, spaceId = {}", triggerId, spaceId);
                 }
+
+                annotation = new AnnotationWrapper(
+                    GenericAnnotation.builder().text("Successfully removed trigger from space").build());
+
+                watsonWorkService.sendTargetedMessage(buildTargetedMessageWithAnnotations(event, Collections.singletonList(annotation)));
+
                 break;
             case GET_TRIGGERS:
                 List<Trigger> triggers = triggerService.getTriggersForSpace(spaceId);
@@ -104,7 +115,7 @@ public class ActionFulfillmentService {
 
                 Trigger trigger = triggerService.findTrigger(spaceId, triggerId);
 
-                AnnotationWrapper annotation = createAnnotationForTrigger(trigger);
+                annotation = createAnnotationForTrigger(trigger);
 
                 watsonWorkService.sendTargetedMessage(buildTargetedMessageWithAnnotations(event, Collections.singletonList(annotation)));
         }
@@ -129,9 +140,15 @@ public class ActionFulfillmentService {
             .append(trigger.getAction()).append("\\n")
             .append("```").append("\\n");
 
+        GenericAnnotation.Button.PostbackButton postbackButton = new GenericAnnotation.Button.PostbackButton(
+            GenericAnnotation.Button.PostbackButton.Style.PRIMARY,
+            String.format("%s %s", ActionType.DELETE_TRIGGER.getActionId(), trigger.getTriggerId()),
+            "Remove from space");
+
         GenericAnnotation annotation = GenericAnnotation.builder()
             .text(builder.toString())
             .title(trigger.getTitle())
+            .buttons(Collections.singletonList(new GenericAnnotation.Button(postbackButton)))
             .build();
 
         return new AnnotationWrapper(annotation);
