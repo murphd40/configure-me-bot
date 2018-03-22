@@ -7,20 +7,20 @@ mutation {
       <#list annotations as annotation>
       {
         genericAnnotation: {
-          <#if annotation.genericAnnotation.title>
+          <#if annotation.genericAnnotation.title??>
           title: "${annotation.genericAnnotation.title}"
           </#if>
           text: "${annotation.genericAnnotation.text}"
-          <#if annotation.genericAnnotation.color>
+          <#if annotation.genericAnnotation.color??>
           color: "${annotation.genericAnnotation.color}"
           </#if>
-          <#if annotation.genericAnnotation.actor>
+          <#if annotation.genericAnnotation.actor??>
           actor: {
             name: "{annotation.genericAnnotation.actor.name}"
           }
           </#if>
           buttons: [
-            <#list annotation.genericAnnotation.buttons as button>
+            <#list annotation.genericAnnotation.buttons![] as button>
             {
                postbackButton: {
                  style: {button.postbackButton.style}

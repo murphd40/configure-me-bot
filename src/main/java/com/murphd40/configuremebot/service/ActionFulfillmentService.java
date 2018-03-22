@@ -116,10 +116,18 @@ public class ActionFulfillmentService {
         StringBuilder builder = new StringBuilder();
 
         if (StringUtils.hasText(trigger.getCondition())) {
-            builder.append(String.format("*Condition:* `%s`", trigger.getCondition())).append('\n');
+            builder
+                .append("*Condition:*").append("\\n")
+                .append("```").append("\\n")
+                .append(trigger.getCondition()).append("\\n")
+                .append("```").append("\\n");
         }
 
-        builder.append(String.format("*Action:* `%s`", trigger.getAction()));
+        builder
+            .append("*Action:*").append("\\n")
+            .append("```").append("\\n")
+            .append(trigger.getAction()).append("\\n")
+            .append("```").append("\\n");
 
         GenericAnnotation annotation = GenericAnnotation.builder()
             .text(builder.toString())
