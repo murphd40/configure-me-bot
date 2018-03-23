@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = AnnotationAddedEvent.class, name = "message-annotation-added"),
     @JsonSubTypes.Type(value = VerificationEvent.class, name = "verification"),
     @JsonSubTypes.Type(value = MessageCreatedEvent.class, name = "message-created"),
+    @JsonSubTypes.Type(value = MembersAddedEvent.class, name = "space-members-added")
 })
 public interface WebhookEvent {
 

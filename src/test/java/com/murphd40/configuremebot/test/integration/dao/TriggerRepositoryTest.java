@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -77,15 +76,15 @@ public class TriggerRepositoryTest extends BaseIntegrationTest {
 
         assertNotNull(triggerRepository.findTrigger(trigger.getSpaceId(), trigger.getTriggerId()));
 
-        boolean success = triggerRepository.deleteTrigger(trigger.getSpaceId(), trigger.getTriggerId());
+        triggerRepository.deleteTrigger(trigger.getSpaceId(), trigger.getTriggerId());
 
-        assertTrue(success);
         assertNull(triggerRepository.findTrigger(trigger.getSpaceId(), trigger.getTriggerId()));
     }
 
     @Test
     public void deleteTriggerWhichDoesNotExist() {
-        assertFalse(triggerRepository.deleteTrigger("not-a-space", UUIDs.timeBased()));
+        // passes if no exception thrown
+        triggerRepository.deleteTrigger("not-a-space", UUIDs.timeBased());
     }
 
     @Test

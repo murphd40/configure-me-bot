@@ -5,10 +5,10 @@ import java.util.List;
 import com.murphd40.configuremebot.controller.request.webhook.WebhookEvent;
 import com.murphd40.configuremebot.dao.model.Trigger;
 import com.murphd40.configuremebot.dao.repository.TriggerRepository;
+import com.murphd40.configuremebot.event.DefaultTriggerActions;
 import com.murphd40.configuremebot.event.EventContext;
 import com.murphd40.configuremebot.event.EventType;
 import com.murphd40.configuremebot.event.ThreadLocalContext;
-import com.murphd40.configuremebot.event.TriggerActions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -24,7 +24,7 @@ public class EventHandlerService {
     private TriggerRepository triggerRepository;
 
     @Autowired
-    private TriggerActions triggerActions;
+    private DefaultTriggerActions triggerActions;
 
     public void processWebhookEvent(WebhookEvent event) {
         EventType eventType = EventType.fromString(event.getType());
@@ -49,6 +49,7 @@ public class EventHandlerService {
         StandardEvaluationContext evaluationContext = new StandardEvaluationContext(context);
 
         triggers.stream()
+            .peek(trigger -> ThreadLocalContext.setTriggerName(trigger.getTitle()))
             .filter(trigger -> {
                 if (StringUtils.isEmpty(trigger.getCondition())) {
                     // no condition

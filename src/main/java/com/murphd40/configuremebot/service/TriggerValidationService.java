@@ -1,5 +1,9 @@
 package com.murphd40.configuremebot.service;
 
+import java.util.Arrays;
+import java.util.List;
+
+import com.murphd40.configuremebot.controller.request.webhook.MembersAddedEvent;
 import com.murphd40.configuremebot.controller.request.webhook.WebhookEvent;
 import com.murphd40.configuremebot.dao.model.TriggerConfig;
 import com.murphd40.configuremebot.event.EventContext;
@@ -20,6 +24,10 @@ public class TriggerValidationService {
             Class<? extends WebhookEvent> eventClass = triggerConfig.getEventType().getEventClass();
 
             WebhookEvent webhookEvent = eventClass.getDeclaredConstructor().newInstance();
+
+            if (webhookEvent instanceof MembersAddedEvent) {
+                ((MembersAddedEvent) webhookEvent).setMemberIds(Arrays.asList("a", "b", "c"));
+            }
 
             EventContext context = new EventContext(new DummyTriggerActions(), webhookEvent);
             ExpressionParser expressionParser = new SpelExpressionParser();
@@ -48,16 +56,26 @@ public class TriggerValidationService {
         return expression.matches(".*T\\([^()]+\\).*");
     }
 
-    // no-op version of TriggerActions used for validation
-    static class DummyTriggerActions extends TriggerActions {
+    // no-op version of DefaultTriggerActions used for validation
+    static class DummyTriggerActions implements TriggerActions {
         @Override
         public void sendMessage(String content) {
             // no-op
         }
 
         @Override
-        public void sendMessage(String content, String color, String title) {
+        public void sendMessage(String content, String color) {
             // no-op
+        }
+
+        @Override
+        public List<String> getNames(List<String> personIds) {
+            return Arrays.asList("a", "b", "c");
+        }
+
+        @Override
+        public List<String> toMentions(List<String> personIds) {
+            return Arrays.asList("a", "b", "c");
         }
     }
 

@@ -3,13 +3,14 @@ package com.murphd40.configuremebot.event;
 import java.util.Arrays;
 
 import com.murphd40.configuremebot.controller.request.webhook.AnnotationAddedEvent;
+import com.murphd40.configuremebot.controller.request.webhook.MembersAddedEvent;
 import com.murphd40.configuremebot.controller.request.webhook.MessageCreatedEvent;
 import com.murphd40.configuremebot.controller.request.webhook.WebhookEvent;
 
 public enum EventType {
     MESSAGE_CREATED("message-created", MessageCreatedEvent.class),
-    MESSAGE_ANNOTATION_ADDED("message-annotation-added", AnnotationAddedEvent.class);
-//    MEMBERS_ADDED("members-added");
+    MESSAGE_ANNOTATION_ADDED("message-annotation-added", AnnotationAddedEvent.class),
+    MEMBERS_ADDED("space-members-added", MembersAddedEvent.class);
 
     private String value;
 

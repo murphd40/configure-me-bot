@@ -10,5 +10,6 @@ abstract class AbstractWebhookEvent implements WebhookEvent {
 
     private String type;
     private String userId;
+    private String spaceId;
 
 }

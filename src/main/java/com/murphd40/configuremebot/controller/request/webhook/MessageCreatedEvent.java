@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class MessageCreatedEvent extends AbstractWebhookEvent {
 
-    private String spaceId;
     private String content = "";
     private String userId = "";
     private String userName = "";

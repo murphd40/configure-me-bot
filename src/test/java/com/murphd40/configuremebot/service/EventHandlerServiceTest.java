@@ -6,8 +6,8 @@ import java.util.UUID;
 import com.murphd40.configuremebot.controller.request.webhook.MessageCreatedEvent;
 import com.murphd40.configuremebot.dao.model.Trigger;
 import com.murphd40.configuremebot.dao.repository.TriggerRepository;
+import com.murphd40.configuremebot.event.DefaultTriggerActions;
 import com.murphd40.configuremebot.event.EventType;
-import com.murphd40.configuremebot.event.TriggerActions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,7 +24,7 @@ public class EventHandlerServiceTest {
     private EventHandlerService eventHandlerService = new EventHandlerService();
 
     @Mock
-    private TriggerActions triggerActions;
+    private DefaultTriggerActions triggerActions;
 
     @Mock
     private TriggerRepository triggerRepository;
