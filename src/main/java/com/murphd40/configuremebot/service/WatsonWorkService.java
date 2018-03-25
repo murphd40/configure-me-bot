@@ -8,9 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.murphd40.configuremebot.client.WatsonWorkClient;
 import com.murphd40.configuremebot.client.graphql.GraphQLQuery;
 import com.murphd40.configuremebot.client.graphql.GraphQLQueryBuilder;
+import com.murphd40.configuremebot.client.graphql.request.Message;
 import com.murphd40.configuremebot.client.graphql.request.TargetedMessage;
 import com.murphd40.configuremebot.client.graphql.response.Person;
-import com.murphd40.configuremebot.client.model.Message;
 import com.murphd40.configuremebot.configuration.WatsonWorkspaceProperties;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +35,20 @@ public class WatsonWorkService {
     @Autowired
     private GraphQLQueryBuilder graphQLQueryBuilder;
 
+    @Deprecated
     @SneakyThrows
-    public void createMessage(String spaceId, Message message) {
-        Response<Message> response = watsonWorkClient.createMessage(authService.getAppAuthToken(), spaceId, message).execute();
+    public void createMessage(String spaceId, com.murphd40.configuremebot.client.model.Message message) {
+        Response<?> response = watsonWorkClient.createMessage(authService.getAppAuthToken(), spaceId, message).execute();
 
         if (!response.isSuccessful()) {
             throw new RuntimeException("Failed to send message");
         }
+    }
+
+    @SneakyThrows
+    public void sendMessage(Message message) {
+        GraphQLQuery query = graphQLQueryBuilder.buildMessageQuery(message);
+        watsonWorkClient.postGraphQLQuery(authService.getAppAuthToken(), query).execute();
     }
 
     @SneakyThrows

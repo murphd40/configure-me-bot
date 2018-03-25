@@ -1,15 +1,39 @@
 mutation {
   createMessage(input: {
-    conversationId: "5aa26de8e4b092ef0b999d63"
-    annotations: {
-      genericAnnotation: {
-        title: "hello"
-        text: "HELLO WORLD"
+    conversationId: "${conversationId}"
+    content: "${content}"
+    annotations: [
+      <#list annotations as annotation>
+      {
+        genericAnnotation: {
+          <#if annotation.genericAnnotation.title??>
+          title: "${annotation.genericAnnotation.title}"
+          </#if>
+          text: "${annotation.genericAnnotation.text}"
+          <#if annotation.genericAnnotation.color??>
+          color: "${annotation.genericAnnotation.color}"
+          </#if>
+          <#if annotation.genericAnnotation.actor??>
+          actor: {
+            name: "${annotation.genericAnnotation.actor.name}"
+          }
+          </#if>
+          buttons: [
+            <#list annotation.genericAnnotation.buttons![] as button>
+            {
+               postbackButton: {
+                 style: ${button.postbackButton.style}
+                 id: "${button.postbackButton.id}"
+                 title: "${button.postbackButton.title}"
+               }
+            }
+            </#list>
+          ]
+        }
       }
-    }
+      </#list>
+    ]
   }) {
-    message {
-      id
-    }
+    id
   }
 }

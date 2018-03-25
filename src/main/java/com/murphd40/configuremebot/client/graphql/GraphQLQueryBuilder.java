@@ -3,6 +3,7 @@ package com.murphd40.configuremebot.client.graphql;
 import java.util.Collections;
 import java.util.List;
 
+import com.murphd40.configuremebot.client.graphql.request.Message;
 import com.murphd40.configuremebot.client.graphql.request.TargetedMessage;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -16,6 +17,12 @@ public class GraphQLQueryBuilder {
 
     @Autowired
     private Configuration freeMarkerConfig;
+
+    @SneakyThrows
+    public GraphQLQuery buildMessageQuery(Message message) {
+        Template template = freeMarkerConfig.getTemplate("createMessage.graphql");
+        return new GraphQLQuery(FreeMarkerTemplateUtils.processTemplateIntoString(template, message));
+    }
 
     @SneakyThrows
     public GraphQLQuery buildTargetedMessageQuery(TargetedMessage targetedMessage) {

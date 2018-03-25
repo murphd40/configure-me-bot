@@ -19,6 +19,7 @@ import com.murphd40.configuremebot.client.graphql.request.GenericAnnotation;
 import com.murphd40.configuremebot.client.graphql.request.GenericAnnotation.Button.PostbackButton;
 import com.murphd40.configuremebot.client.graphql.request.InformationCard;
 import com.murphd40.configuremebot.client.graphql.request.InformationCard.Button;
+import com.murphd40.configuremebot.client.graphql.request.Message;
 import com.murphd40.configuremebot.client.graphql.request.TargetedMessage;
 import com.murphd40.configuremebot.client.graphql.response.Person;
 import com.murphd40.configuremebot.controller.request.webhook.ActionSelectedAnnotationPayload;
@@ -86,6 +87,22 @@ public class ActionFulfillmentService {
 
                 annotation = new AnnotationWrapper(GenericAnnotation.builder().text(stringBuilder.toString()).build());
                 watsonWorkService.sendTargetedMessage(buildTargetedMessageWithAnnotations(event, Collections.singletonList(annotation)));
+
+                PostbackButton infoButton = new PostbackButton(PostbackButton.Style.PRIMARY,
+                    String.format("%s %s", ActionType.TRIGGER_INFO.getActionId(), triggerId), "Info");
+
+                annotation = new AnnotationWrapper(GenericAnnotation.builder()
+                    .text("hello")
+                    .actor(new GenericAnnotation.Actor(event.getUserName()))
+                    .buttons(Collections.singletonList(new GenericAnnotation.Button(infoButton)))
+                    .build());
+
+                Message message = Message.builder()
+                    .conversationId(spaceId)
+                    .annotations(Collections.singletonList(annotation))
+                    .build();
+
+                watsonWorkService.sendMessage(message);
 
                 break;
             case DELETE_TRIGGER:

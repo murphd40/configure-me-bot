@@ -25,6 +25,7 @@ public class Message {
         private String color;
         private String title;
         private String text;
+        private String annotationId;
 //    private Actor actor;
     }
 
