@@ -1,7 +1,9 @@
 mutation {
   createMessage(input: {
     conversationId: "${conversationId}"
+    <#if content??>
     content: "${content}"
+    </#if>
     annotations: [
       <#list annotations as annotation>
       {
@@ -34,6 +36,8 @@ mutation {
       </#list>
     ]
   }) {
-    id
+    message {
+      id
+    }
   }
 }

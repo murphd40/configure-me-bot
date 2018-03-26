@@ -74,6 +74,38 @@ public class ActionFulfillmentService {
                 StringBuilder stringBuilder = new StringBuilder();
                 if (success) {
                     log.info("Successfully added trigger to space. triggerId = {}, spaceId = {}", triggerId, spaceId);
+
+                    stringBuilder.append(String.format("*Title:* %s", trigger.getTitle())).append("\\n");
+                    stringBuilder.append(String.format("*Event type:* %s", trigger.getEventType())).append("\\n");
+
+                    if (StringUtils.hasText(trigger.getCondition())) {
+                        stringBuilder
+                            .append("*Condition:*").append("\\n")
+                            .append("```").append("\\n")
+                            .append(trigger.getCondition()).append("\\n")
+                            .append("```").append("\\n");
+                    }
+
+                    stringBuilder
+                        .append("*Action:*").append("\\n")
+                        .append("```").append("\\n")
+                        .append(trigger.getAction()).append("\\n")
+                        .append("```");
+
+                    annotation = new AnnotationWrapper(GenericAnnotation.builder()
+                        .actor(new GenericAnnotation.Actor(event.getUserName()))
+                        .title("added a new trigger")
+                        .text(stringBuilder.toString())
+                        .build());
+
+                    Message message = Message.builder()
+                        .conversationId(spaceId)
+                        .annotations(Collections.singletonList(annotation))
+                        .build();
+
+                    watsonWorkService.sendMessage(message);
+
+                    stringBuilder = new StringBuilder();
                     stringBuilder.append(BLANK_LINE)
                         .append("*Success!*").append("\\n")
                         .append(BLANK_LINE)
@@ -88,22 +120,6 @@ public class ActionFulfillmentService {
                 annotation = new AnnotationWrapper(GenericAnnotation.builder().text(stringBuilder.toString()).build());
                 watsonWorkService.sendTargetedMessage(buildTargetedMessageWithAnnotations(event, Collections.singletonList(annotation)));
 
-                PostbackButton infoButton = new PostbackButton(PostbackButton.Style.PRIMARY,
-                    String.format("%s %s", ActionType.TRIGGER_INFO.getActionId(), triggerId), "Info");
-
-                annotation = new AnnotationWrapper(GenericAnnotation.builder()
-                    .text("hello")
-                    .actor(new GenericAnnotation.Actor(event.getUserName()))
-                    .buttons(Collections.singletonList(new GenericAnnotation.Button(infoButton)))
-                    .build());
-
-                Message message = Message.builder()
-                    .conversationId(spaceId)
-                    .annotations(Collections.singletonList(annotation))
-                    .build();
-
-                watsonWorkService.sendMessage(message);
-
                 break;
             case DELETE_TRIGGER:
                 triggerIdString = action.getParams().get(0);
@@ -116,6 +132,19 @@ public class ActionFulfillmentService {
                 stringBuilder = new StringBuilder();
                 if (trigger != null) {
                     log.info("Successfully removed trigger from space. triggerId = {}, spaceId = {}", triggerId, spaceId);
+
+                    annotation = new AnnotationWrapper(GenericAnnotation.builder()
+                        .actor(new GenericAnnotation.Actor(event.getUserName()))
+                        .title("removed a trigger")
+                        .text(String.format("*Title:* %s", trigger.getTitle()))
+                        .build());
+
+                    Message message = Message.builder()
+                        .conversationId(spaceId)
+                        .annotations(Collections.singletonList(annotation))
+                        .build();
+
+                    watsonWorkService.sendMessage(message);
 
                     stringBuilder.append(BLANK_LINE)
                         .append("*Success!*").append("\\n")
@@ -167,7 +196,6 @@ public class ActionFulfillmentService {
 
         StringBuilder builder = new StringBuilder("\\u200B \\n");
 
-//        builder.append(String.format("*Title:* %s", trigger.getTitle())).append("\\n \\u200B \\n");
         builder.append(String.format("*Added by:* %s", creator.getDisplayName())).append("\\n \\u200B \\n");
         builder.append(String.format("*Event type:* %s", trigger.getEventType())).append("\\n \\u200B \\n");
 

@@ -1,10 +1,13 @@
 package com.murphd40.configuremebot.event;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.murphd40.configuremebot.client.graphql.request.AnnotationWrapper;
+import com.murphd40.configuremebot.client.graphql.request.GenericAnnotation;
+import com.murphd40.configuremebot.client.graphql.request.Message;
 import com.murphd40.configuremebot.client.graphql.response.Person;
-import com.murphd40.configuremebot.client.model.Message;
 import com.murphd40.configuremebot.service.WatsonWorkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,10 +27,21 @@ public class DefaultTriggerActions implements TriggerActions {
     public void sendMessage(String content, String color) {
         String spaceId = ThreadLocalContext.getSpaceId();
         String triggerName = ThreadLocalContext.getTriggerName();
-        Message message = Message.appMessage(content);
-        message.getAnnotations().get(0).setColor(color);
-        message.getAnnotations().get(0).setTitle(triggerName);
-        watsonWorkService.createMessage(spaceId, message);
+
+        AnnotationWrapper wrapper = new AnnotationWrapper(
+            GenericAnnotation.builder()
+                .text(content)
+                .title(triggerName)
+                .color(color)
+                .build()
+        );
+
+        Message message = Message.builder()
+            .conversationId(spaceId)
+            .annotations(Collections.singletonList(wrapper))
+            .build();
+
+        watsonWorkService.sendMessage(message);
     }
 
     @Override
