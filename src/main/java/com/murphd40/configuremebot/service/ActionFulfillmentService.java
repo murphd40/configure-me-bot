@@ -82,14 +82,14 @@ public class ActionFulfillmentService {
                         stringBuilder
                             .append("*Condition:*").append("\\n")
                             .append("```").append("\\n")
-                            .append(trigger.getCondition()).append("\\n")
+                            .append(escape(trigger.getCondition())).append("\\n")
                             .append("```").append("\\n");
                     }
 
                     stringBuilder
                         .append("*Action:*").append("\\n")
                         .append("```").append("\\n")
-                        .append(trigger.getAction()).append("\\n")
+                        .append(escape(trigger.getAction())).append("\\n")
                         .append("```");
 
                     annotation = new AnnotationWrapper(GenericAnnotation.builder()
@@ -203,14 +203,14 @@ public class ActionFulfillmentService {
             builder
                 .append("*Condition:*").append("\\n")
                 .append("```").append("\\n")
-                .append(trigger.getCondition()).append("\\n")
+                .append(escape(trigger.getCondition())).append("\\n")
                 .append("```").append("\\n");
         }
 
         builder
             .append("*Action:*").append("\\n")
             .append("```").append("\\n")
-            .append(trigger.getAction()).append("\\n")
+            .append(escape(trigger.getAction())).append("\\n")
             .append("```").append("\\n");
 
         PostbackButton deleteButton = new PostbackButton(PostbackButton.Style.PRIMARY,
@@ -262,6 +262,10 @@ public class ActionFulfillmentService {
             .targetUserId(event.getUserId())
             .annotations(annotations)
             .attachments(attachments).build();
+    }
+
+    private String escape(String body) {
+        return body.replace("\\", "\\\\");
     }
 
 }
